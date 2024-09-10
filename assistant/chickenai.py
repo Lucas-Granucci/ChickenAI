@@ -5,21 +5,20 @@ from fire import Fire
 
 import os
 import json
-import colorama
-from colorama import Fore, Style
 
 from tba.tba_api import TheBlueAllianceAPI
 from tba.tba_tool import FetchTeamInfo, FetchTeamEvents, FetchAllEvents
-
-# Initialize colorama
-colorama.init(autoreset=True)
+from chatbot import ChatBot
 
 # Initialize the TBA API
 tba_api = TheBlueAllianceAPI(os.getenv("TBA_API_KEY"))
         
+# Define run() function for interactive chat loop
 def run(model: str = ""):
+
+    # Initialize the LLM (locally hosted)
     lm_config = lm.OpenAIGPTConfig(
-        chat_model="local/localhost:1234/v1",
+        chat_model=model,
     )
     
     # Backend LLM configuration
@@ -43,6 +42,7 @@ def run(model: str = ""):
     )
     backend_agent = lr.ChatAgent(backend_agent_config)
 
+    # Enable tools
     backend_agent.enable_message(FetchTeamInfo)
     backend_agent.enable_message(FetchTeamEvents)
     backend_agent.enable_message(FetchAllEvents)
@@ -58,6 +58,7 @@ def run(model: str = ""):
     )
     response_agent = lr.ChatAgent(response_agent_config)
 
+    # Define backend callback function
     def backend_callback(message: str):
         """
         Handles interaction with the backend agent (fetching data from api).
@@ -87,41 +88,12 @@ def run(model: str = ""):
             return response.content
         else:
             return f"Error: {backend_result}"
+        
+    # Initialize the chatbot
+    chatbot = ChatBot(query_processor = backend_callback)
 
-    def interactive_chat():
-
-        print()
-        print("\033[1;36m" + "Welcome to Chicken AI - A FIRST Robotics Expert" + "\033[0m")
-        print("\033[3;32m" + "Gain access to real, up-to-date information about FRC teams and events" + "\033[0m")
-        print("""                                                                                      
- ██████╗██╗  ██╗██╗ ██████╗██╗  ██╗███████╗███╗   ██╗       █████╗ ██╗
-██╔════╝██║  ██║██║██╔════╝██║ ██╔╝██╔════╝████╗  ██║      ██╔══██╗██║
-██║     ███████║██║██║     █████╔╝ █████╗  ██╔██╗ ██║█████╗███████║██║
-██║     ██╔══██║██║██║     ██╔═██╗ ██╔══╝  ██║╚██╗██║╚════╝██╔══██║██║
-╚██████╗██║  ██║██║╚██████╗██║  ██╗███████╗██║ ╚████║      ██║  ██║██║
- ╚═════╝╚═╝  ╚═╝╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═══╝      ╚═╝  ╚═╝╚═╝                                        
-        """)
-        print("\033[1;36m" + "Powered by The Blue Alliance API" + "\033[0m")
-        print("\033[3;32m" + "Type 'exit' or 'quit' to terminate chat at any time" + "\033[0m")
-        print()
-        while True:
-            # Get user input
-            user_query = input(Fore.GREEN + "User: " + Style.RESET_ALL)
-            
-            # Handle exit condition
-            if user_query.strip().lower() == 'exit' or user_query.strip().lower() == 'quit':
-                print(Fore.MAGENTA + "\nThank you for chatting with me about FIRST Robotics. Have a great day!")
-                break
-            
-            # Call the backend function and handle results
-            try:
-                result = backend_callback(user_query)
-            except Exception as e:
-                # Handle any unexpected errors gracefully
-                print(Fore.RED + f"An error occurred: {e}" + Style.RESET_ALL)
-
-    # Start the interactive chat
-    interactive_chat()
+    # Start the chatbot
+    chatbot.start_chat()
 
 if __name__ == "__main__":
-    Fire(run)
+    Fire(run("local/localhost:1234/v1"))

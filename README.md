@@ -39,17 +39,13 @@ ChickenAI is an AI-powered chatbot that provides up-to-date information about FI
    - Run the LLM on a local server
    - Current endpoint is set to "http://localhost:1234/v1"
 
-5. Run the ChickenAI application:
-   
-   ```
-   python assistant/chickenai.py
-   ```
-
 
 ## Usage
 
 Run the ChickenAI chatbot:
 
+```
 python assistant/chickenai.py
+```
 
 (Readme generated with help from Claude.ai)
