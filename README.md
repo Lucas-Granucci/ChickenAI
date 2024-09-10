@@ -21,7 +21,7 @@ ChickenAI is an AI-powered chatbot that provides up-to-date information about FI
 1. Clone the repository:
 
    ```
-   git clone https://github.com/your-username/ChickenAI.git
+   git clone https://github.com/LucasG2008/ChickenAI.git
    cd ChickenAI
    ```
    
@@ -42,7 +42,7 @@ ChickenAI is an AI-powered chatbot that provides up-to-date information about FI
 5. Run the ChickenAI application:
    
    ```
-   python main.py
+   python assistant/chickenai.py
    ```
 
 
