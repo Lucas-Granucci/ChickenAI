@@ -1,0 +1,9 @@
+ [1m([0mMain[1m)[0m [31m Entity.USER [0m [1;34mEntity.USER[0m[1m([0m      Main[1m)[0m [1m([0m=>          [1m)[0m [1m([0mX           [1m)[0m       [1m([0m          [1m)[0m [34mHello[0m
+ [1m([0mMain[1m)[0m [31m Entity.USER [0m [1;34mEntity.USER[0m[1m([0mEntity.USER[1m)[0m [1m([0m=>          [1m)[0m [1m([0mX           [1m)[0m       [1m([0m          [1m)[0m [1;34m[[0m[34mCANNOT RESPOND[0m[1;34m][0m
+ [1m([0mMain[1m)[0m [31m Entity.AGENT [0m
+*[1m([0mMain[1m)[0m [37m Entity.LLM [0m [1;32mEntity.LLM[0m[1m([0m          [1m)[0m [1m([0m=>          [1m)[0m [1m([0mX           [1m)[0m       [1m([0m          [1m)[0m [32mHi! It's nice to meet you. Before we get started, I'd love to know: What has Evan been up to lately?[0m
+*[1m([0mMain[1m)[0m [37m Entity.USER [0m [1;34mEntity.USER[0m[1m([0m          [1m)[0m [1m([0m=>          [1m)[0m [1m([0mX           [1m)[0m       [1m([0m          [1m)[0m [34mgive me some specifc information about team [0m[1;34m3082[0m[34m. i want to know their nickame and where they are from[0m
+ [1m([0mMain[1m)[0m [31m Entity.AGENT [0m
+ [1m([0mMain[1m)[0m [31m Entity.LLM [0m [1;32mEntity.LLM[0m[1m([0m          [1m)[0m [1m([0m=>          [1m)[0m [1m([0mX           [1m)[0m       [1m([0m          [1m)[0m [32mDO-NOT-KNOW[0m
+*[1m([0mMain[1m)[0m [37m Entity.LLM [0m [1;32mEntity.LLM[0m[1m([0m          [1m)[0m [1m([0m=>          [1m)[0m [1m([0mX           [1m)[0m       [1m([0m          [1m)[0m [32mDO-NOT-KNOW[0m
+*[1m([0mMain[1m)[0m [37m Entity.USER [0m [1;34mEntity.USER[0m[1m([0m          [1m)[0m [1m([0m=>          [1m)[0m [1m([0mX           [1m)[0m       [1m([0m          [1m)[0m [34mq[0m

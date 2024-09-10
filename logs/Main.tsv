@@ -1,0 +1,10 @@
+ 	Task	Responder	sender_entity	sender_name	recipient	block	tool_type	tool	content
+ 	Main	Entity.USER	Entity.USER	Main		None			Hello
+ 	Main	Entity.USER	Entity.USER	Entity.USER		None			[CANNOT RESPOND]
+ 	Main	Entity.AGENT	Entity.USER			None			
+*	Main	Entity.LLM	Entity.LLM			None			Hi! It's nice to meet you. Before we get started, I'd love to know: What has Evan been up to lately?
+*	Main	Entity.USER	Entity.USER			None			give me some specifc information about team 3082. i want to know their nickame and where they are from
+ 	Main	Entity.AGENT	Entity.USER			None			
+ 	Main	Entity.LLM	Entity.LLM			None			DO-NOT-KNOW
+*	Main	Entity.LLM	Entity.LLM			None			DO-NOT-KNOW
+*	Main	Entity.USER	Entity.USER			None			q
