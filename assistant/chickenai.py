@@ -1,7 +1,6 @@
 import langroid as lr
 import langroid.language_models as lm
 from langroid.agent.tools.orchestration import FinalResultTool
-from fire import Fire
 
 import os
 import json
@@ -96,4 +95,4 @@ def run(model: str = ""):
     chatbot.start_chat()
 
 if __name__ == "__main__":
-    Fire(run("local/localhost:1234/v1"))
+    run("local/localhost:1234/v1")
