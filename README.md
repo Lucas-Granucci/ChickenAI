@@ -18,11 +18,32 @@ ChickenAI is an AI-powered chatbot that provides up-to-date information about FI
 
 ## Installation
 
-1. Clone the repository
+1. Clone the repository:
 
-2. Set up your The Blue Alliance API key as an environment variable
+   ```
+   git clone https://github.com/your-username/ChickenAI.git
+   cd ChickenAI
+   ```
+   
+2. Install the required dependencies with Anaconda:
+   
+   ```
+   conda create --name chickenai --file requirements.txt
+   conda activate chickenai
+   ```
 
-3. Set up your locally hosted LLM and run on local server, current endpoint set to "local/localhost:1234/v1"
+3. Set up your The Blue Alliance API key as an environment variable:
+
+4. Set up your locally hosted LLM:
+   - Install and configure your chosen LLM (e.g., Llama 3 7B)
+   - Run the LLM on a local server
+   - Current endpoint is set to "http://localhost:1234/v1"
+
+5. Run the ChickenAI application:
+   
+   ```
+   python main.py
+   ```
 
 
 ## Usage
