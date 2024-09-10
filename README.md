@@ -14,12 +14,15 @@ ChickenAI is an AI-powered chatbot that provides up-to-date information about FI
 - Python 3.7+
 - Langroid library
 - The Blue Alliance API key
+- Locally hosted LLM (e.g., Llamma 3 7B)
 
 ## Installation
 
 1. Clone the repository
 
 2. Set up your The Blue Alliance API key as an environment variable
+
+3. Set up your locally hosted LLM and run on local server, current endpoint set to "local/localhost:1234/v1"
 
 
 ## Usage
