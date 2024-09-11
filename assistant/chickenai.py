@@ -89,7 +89,7 @@ def run(model: str = ""):
             return f"Error: {backend_result}"
         
     # Initialize the chatbot
-    chatbot = ChatBot(query_processor = backend_callback)
+    chatbot = ChatBot(query_processor = backend_callback, dictate_response = True)
 
     # Start the chatbot
     chatbot.start_chat()
