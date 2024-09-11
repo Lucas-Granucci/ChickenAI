@@ -31,6 +31,8 @@ def run(model: str = ""):
         After receiving the team information, pass it along with the original query to the response generation LLM.
         Do not generate any response about the team yourself. Only use the selected tool to get real data.
 
+        IMPORTANT: Only respond with the tool call, nothing else.
+
         IMPORTANT: If you don't have all the parameters, use the default value None.
         Tools should be called in the following format:
         {
@@ -71,6 +73,10 @@ def run(model: str = ""):
             
             # Prepare context for the response generation LLM
             context = f"""
+
+            Use the retrieved information to answer the user's question. Assume that the retrieved information was 
+            collected in order to better answer the user's question.
+
             Original Query: {message}
             Retrieved Information: {json.dumps(api_data, indent=2)}
 
@@ -78,8 +84,8 @@ def run(model: str = ""):
             1. Analyze the original query and the retrieved information.
             2. Provide a concise and informative answer that directly addresses the user's question.
             3. Focus on the most relevant details from the retrieved information.
-            4. If the retrieved information is insufficient or irrelevant, acknowledge this and suggest what additional information might be needed.
-            5. Ensure your response is clear, accurate, and to the point.
+            4. Ensure your response is clear, accurate, and to the point.
+            5. Do not include the original query in your response.
             """
 
             # Response generation LLM creates the final response

@@ -2,6 +2,8 @@ import pyttsx3
 import keyboard
 import speech_recognition as sr
 
+from utils import editable_input
+
 class ChatBot:
 
     def __init__(self, query_processor, dictate_response=False):
@@ -10,37 +12,23 @@ class ChatBot:
         self.dictate_response = dictate_response
 
     def start_chat(self):
-
         self.introduction()
 
         self.print_user_label()
-        
+
         while True:
-
-            user_query = None
-
-            if keyboard.is_pressed('space'):  # You can change 'space' to any key you prefer
-                try:
-                    with sr.Microphone() as source2:
-                        self.speech_recognizer.adjust_for_ambient_noise(source2, duration=0.2)
-                        audio2 = self.speech_recognizer.listen(source2)
-                        
-                        MyText = self.speech_recognizer.recognize_google(audio2)
-                        MyText = MyText.lower()
-                        
-                        print("\033[3;32m" + MyText + "\033[0m")
-
-                        user_query = MyText
-
-                except sr.RequestError as e:
-                    print("Could not request results {0}".format(e))
-                    
-                except sr.UnknownValueError as e:
-                    print("Unknown error occurred: {0}".format(e))
-
-            if user_query is None:
-                continue
+            user_query = ""
+            my_text = ""
             
+            if keyboard.is_pressed('f3'):
+                my_text = self.record_audio()
+
+            if my_text:
+                user_query = editable_input(my_text)
+                
+            if not user_query:
+                continue
+
             if user_query.strip().lower() == 'quit':
                 self.goodbye()
                 break
@@ -52,9 +40,25 @@ class ChatBot:
                     self.speak_text(result)
 
                 self.print_user_label()
-
             except Exception as e:
-                self.display_error(error_message=e)
+                self.display_error(error_message=str(e))
+
+    def record_audio(self):
+        try:
+            with sr.Microphone() as source:
+                self.speech_recognizer.adjust_for_ambient_noise(source, duration=0.2)
+                audio = self.speech_recognizer.listen(source)
+                
+                text = self.speech_recognizer.recognize_google(audio)
+                return text.lower()
+
+        except sr.RequestError as e:
+            print("Could not request results; {0}".format(e))
+            return ""
+            
+        except sr.UnknownValueError:
+            print("Unknown error occurred")
+            return ""
 
     def speak_text(self, command: str):
     

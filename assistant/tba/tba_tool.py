@@ -71,10 +71,12 @@ class FetchAllEvents(lr.agent.ToolMessage):
             all_events = tba_api.get_events_in_year(year=self.year)
 
             if hasattr(self, 'country_name') and self.country_name:
-                all_events = [event for event in all_events if event['country'] == self.country_name]
+                if self.country_name != 'None':
+                    all_events = [event for event in all_events if event['country'] == self.country_name]
 
             if hasattr(self, 'state_code') and self.state_code:
-                all_events = [event for event in all_events if event['state_prov'] == self.state_code]
+                if self.state_code != 'None':
+                    all_events = [event for event in all_events if event['state_prov'] == self.state_code]
 
             events_dict = {f"Event {i+1}: {event['name']}": event for i, event in enumerate(all_events)}  # Convert to dict with index as key for easier access
             
