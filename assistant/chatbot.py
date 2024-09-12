@@ -6,7 +6,8 @@ from assistant.utils import editable_input
 
 class ChatBot:
 
-    def __init__(self, query_processor, dictate_response=False):
+    def __init__(self, query_processor, dictate_response=False) -> None:
+
         self.query_processor = query_processor
         self.speech_recognizer = sr.Recognizer() 
         self.dictate_response = dictate_response
@@ -58,7 +59,7 @@ class ChatBot:
             except Exception as e:
                 self.display_error(error_message=str(e))
 
-    def record_audio(self):
+    def record_audio(self) -> str:
         """
         Use users microphone to record audio and transcribe to text
         """
@@ -78,7 +79,7 @@ class ChatBot:
             print("Unknown error occurred")
             return ""
 
-    def speak_text(self, command: str):
+    def speak_text(self, command: str) -> None:
     
         # Initialize the engine
         engine = pyttsx3.init()

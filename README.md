@@ -45,7 +45,7 @@ ChickenAI is an AI-powered chatbot that provides up-to-date information about FI
 Run the ChickenAI chatbot:
 
 ```
-python assistant/chickenai.py
+python chickenai.py
 ```
 
 (Readme generated with help from Claude.ai)

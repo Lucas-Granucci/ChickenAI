@@ -1,14 +1,11 @@
+import os
 import langroid as lr
 import langroid.language_models as lm
-from langroid.agent.tools.orchestration import FinalResultTool
 
-import os
-import json
-from typing import Dict, Any
-
+from assistant.chatbot import ChatBot
+from assistant.query_processor import QueryProcessor
 from assistant.tba.tba_api import TheBlueAllianceAPI
 from assistant.tba.tba_tool import FetchTeamInfo, FetchTeamEvents, FetchAllEvents, ExtractTeamNumber
-from assistant.chatbot import ChatBot
 
 # Initialize the TBA API
 tba_api = TheBlueAllianceAPI(os.getenv("TBA_API_KEY"))
@@ -26,26 +23,23 @@ def run(model: str = ""):
     backend_agent_config = lr.ChatAgentConfig(
         llm=lm_config,
         system_message="""
-    You are an assistant for FIRST Robotics information. Your task is to:
-    1. Understand the user's query and identify the necessary information to fulfill it.
-    2. Decide which tool to use based on the user's query and the required information.
-    3. Call the appropriate tool with the necessary parameters.
-    
-    IMPORTANT: If you do not have the team number and require it for the selected tool, call ExtractTeamNumber tool instead.
+            You are an assistant for FIRST Robotics information. Your task is to:
 
-    IMPORTANT:
-    - If any of the tools parameters are missing, use default value None.
-    - If required information is missing, first call the relevant tool to retrieve it.
-    - Only make one call at a time.
+            1. Understand the user's query and identify the necessary information to fulfill it.
+            2. Select the most appropriate tool based on the query and available context.
+            3. Execute the selected tool using the correct parameters.
 
-    IMPORTANT: Only respond with the tool call in the following format:
-    {
-        "request": tool_name,
-        "parameter_name": parameter_value
-    }
+            Tool Response Logic:
+            - Only respond with the tool request. Do not add any explanatory text.
+            - Use the following format for the tool call:
 
-    Use the default value `None` if no value is available for an optional parameter.
-    """,
+            {
+                "request": "tool_name",
+                "parameter_name": "parameter_value"
+            }
+
+            IMPORTANT: If an parameter is missing, default to "None". Even if a parameter is missisng, still include all of the parameters.
+            """,
     )
     backend_agent = lr.ChatAgent(backend_agent_config)
 
@@ -53,7 +47,6 @@ def run(model: str = ""):
     backend_agent.enable_message(FetchTeamInfo)
     backend_agent.enable_message(FetchTeamEvents)
     backend_agent.enable_message(FetchAllEvents)
-    backend_agent.enable_message(ExtractTeamNumber)
 
     # Response generation LLM configuration
     response_agent_config = lr.ChatAgentConfig(
@@ -66,70 +59,14 @@ def run(model: str = ""):
     )
     response_agent = lr.ChatAgent(response_agent_config)
     
-    # Answer validation agent LLM configuration
-    answer_validation_agent_config = lr.ChatAgentConfig(
-        llm=lm_config,
-        system_message="""
-        You are a helpful assistant. You are tasked with determining wether some data is sufficient in answering a user's question. You ALWAYS either respond
-        with "YES" or "NO". If the data is siffucient, respond with "YES". If more data is needed for a response, respond with "NO". 
-
-        IMPORTANT: Make sure to only respond with "YES" or "NO" (case-sensitive).
-        """,
+    # Initialize the query processor
+    query_processor = QueryProcessor(
+        response_agent=response_agent,
+        backend_agent=backend_agent
     )
-    answer_validation_agent = lr.ChatAgent(answer_validation_agent_config)
-    
-    def backend_callback(message: str) -> str:
-
-        backend_result = fetch_backend_data(message)
-
-        if isinstance(backend_result, str):  # Error case
-            return backend_result
-        
-        validation_message = f"""
-        User Query: {message}
-        Retrieved Information: {json.dumps(backend_result, indent=2)}
-        """
-        
-        is_data_sufficient = answer_validation_agent.llm_response(validation_message)
-
-        if is_data_sufficient.content == "YES":
-            return generate_response(message, backend_result)
-        else:
-            follow_up_message = f"{message} {backend_result}"
-            follow_up_result = fetch_backend_data(follow_up_message)
-            return generate_response(message, follow_up_result)
-
-    def fetch_backend_data(message: str) -> Dict[str, Any] | str:
-
-        backend_task = lr.Task(backend_agent, interactive=False)
-        backend_result = backend_task[FinalResultTool].run(message)
-
-        if isinstance(backend_result, FinalResultTool) and hasattr(backend_result, 'api_data'):
-            return backend_result.api_data.data
-        else:
-            return f"Error: {backend_result}"
-
-    def generate_response(message: str, api_data: Dict[str, Any]) -> str:
-        context = f"""
-        Use the retrieved information to answer the user's question. Assume that the retrieved information was 
-        collected in order to better answer the user's question.
-
-        Original Query: {message}
-        Retrieved Information: {json.dumps(api_data, indent=2)}
-
-        Instructions:
-        1. Analyze the original query and the retrieved information.
-        2. Provide a concise and informative answer that directly addresses the user's question.
-        3. Focus on the most relevant details from the retrieved information.
-        4. Ensure your response is clear, accurate, and to the point.
-        5. Do not include the original query in your response.
-        """
-
-        response = response_agent.llm_response(context)
-        return response.content
         
     # Initialize the chatbot
-    chatbot = ChatBot(query_processor = backend_callback, dictate_response = False)
+    chatbot = ChatBot(query_processor = query_processor.generate_response, dictate_response = False)
 
     # Start the chatbot
     chatbot.start_chat()

@@ -4,7 +4,7 @@ import langroid as lr
 from langroid.pydantic_v1 import BaseModel, Field
 from langroid.agent.tools.orchestration import FinalResultTool
 
-from typing import Optional
+from typing import Optional, Any
 from fuzzywuzzy import process
 from assistant.tba.tba_api import TheBlueAllianceAPI
 
@@ -34,7 +34,7 @@ class ExtractTeamNumber(lr.agent.ToolMessage):
             best_match, score = process.extractOne(self.team_name, self.team_data.keys())
             team_number = self.team_data[best_match]
 
-            return FinalResultTool(api_data=TeamNumber(data={f"{self.team_name} team number": team_number}))
+            return FinalResultTool(api_data=TeamNumber(data={"team_number": team_number}))
         except Exception as e:
             return f"Error fetching team info: {str(e)}"
 
@@ -47,12 +47,17 @@ class TeamInfo(BaseModel):
 
 class FetchTeamInfo(lr.agent.ToolMessage):
     request: str = "fetch_team_info"
-    purpose: str = "To extract team number and fetch FIRST Robotics team information from the API."
+    purpose: str = "To extract team number and fetch FIRST Robotics team information from the API. (eg. location, rookie year, nickname, associations, etc.)"
 
-    team_number: int = Field(..., description="The team number to fetch information for")
+    team_number: Any = Field(None, description="The team number to fetch information for")
+    team_name: Any = Field(None, description="The team name to fetch information for")
 
     def handle(self) -> FinalResultTool:
         try:
+            if self.team_number == 'None':
+                if self.team_name != 'None':
+                    team_number = ExtractTeamNumber(team_name=self.team_name).handle().api_data.data['team_number']
+                    self.team_number = int(team_number)
             team_data = tba_api.get_team_info(self.team_number)
             return FinalResultTool(api_data=TeamInfo(data=team_data))
         except Exception as e:
@@ -67,13 +72,18 @@ class TeamEvents(BaseModel):
 
 class FetchTeamEvents(lr.agent.ToolMessage):
     request: str = "fetch_team_events"
-    purpose: str = "To extract team number and year, then fetch FIRST Robotics team events from the API."
+    purpose: str = "Given team number and year, fetch events attended by the team. Gives events attended by a team during a specifc year/season"
 
-    team_number: int = Field(..., description="The team number to fetch events for")
+    team_number: Any = Field(None, description="The team number to fetch events for")
+    team_name: Any = Field(None, description="The team name to fetch events for")
     year: int = Field(..., description="The year to fetch events for")
 
     def handle(self) -> FinalResultTool:
         try:
+            if self.team_number == 'None':
+                if self.team_name != 'None':
+                    team_number = ExtractTeamNumber(team_name=self.team_name).handle().api_data.data['team_number']
+                    self.team_number = int(team_number)
             team_events = tba_api.get_team_events(team_number=self.team_number, year=self.year)
             team_events_dict = {event['name']:event for event in team_events}
             team_events_dict = {f"Events attended by team {self.team_number}": team_events_dict}
