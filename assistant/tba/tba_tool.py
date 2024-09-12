@@ -1,12 +1,42 @@
 import os
+import json
 import langroid as lr
 from langroid.pydantic_v1 import BaseModel, Field
 from langroid.agent.tools.orchestration import FinalResultTool
 
 from typing import Optional
-from tba.tba_api import TheBlueAllianceAPI
+from fuzzywuzzy import process
+from assistant.tba.tba_api import TheBlueAllianceAPI
 
 tba_api = TheBlueAllianceAPI(os.getenv("TBA_API_KEY"))
+
+################################################################################
+# ---------------------------- TeamNumberFromQuery --------------------------- #
+################################################################################
+
+class TeamNumber(BaseModel):
+    data: dict = Field(..., description="team number")
+
+class ExtractTeamNumber(lr.agent.ToolMessage):
+    request: str = "extract_team_number"
+    purpose: str = "To extract team name from a query and fetch the corresponding team number."
+
+    team_name: str = Field(..., description="The team name to fetch the team number for")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        with open('data/team_data/name_to_number.json', 'r') as f:
+            self.team_data = json.load(f)
+
+    def handle(self) -> FinalResultTool:
+        try:
+
+            best_match, score = process.extractOne(self.team_name, self.team_data.keys())
+            team_number = self.team_data[best_match]
+
+            return FinalResultTool(api_data=TeamNumber(data={f"{self.team_name} team number": team_number}))
+        except Exception as e:
+            return f"Error fetching team info: {str(e)}"
 
 ################################################################################
 # ------------------------------- FetchTeamInfo ------------------------------ #

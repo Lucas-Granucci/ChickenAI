@@ -2,7 +2,7 @@ import pyttsx3
 import keyboard
 import speech_recognition as sr
 
-from utils import editable_input
+from assistant.utils import editable_input
 
 class ChatBot:
 
