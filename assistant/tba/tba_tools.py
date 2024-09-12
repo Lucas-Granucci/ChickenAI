@@ -4,39 +4,40 @@ import langroid as lr
 from langroid.pydantic_v1 import BaseModel, Field
 from langroid.agent.tools.orchestration import FinalResultTool
 
-from typing import Optional, Any
+from typing import Optional, Dict, Any
 from fuzzywuzzy import process
 from assistant.tba.tba_api import TheBlueAllianceAPI
 
 tba_api = TheBlueAllianceAPI(os.getenv("TBA_API_KEY"))
 
 ################################################################################
-# ---------------------------- TeamNumberFromQuery --------------------------- #
+# ----------------------------- ExtractTeamNumber ---------------------------- #
 ################################################################################
 
-class TeamNumber(BaseModel):
-    data: dict = Field(..., description="team number")
+class ExtractTeamNumber():
+    """
+    Fetch the team number given the name of a FIRST robotics team
+    """
 
-class ExtractTeamNumber(lr.agent.ToolMessage):
-    request: str = "extract_team_number"
-    purpose: str = "To extract team name from a query and fetch the corresponding team number."
-
-    team_name: str = Field(..., description="The team name to fetch the team number for")
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
         with open('data/team_data/name_to_number.json', 'r') as f:
             self.team_data = json.load(f)
 
-    def handle(self) -> FinalResultTool:
+    def fetch_team_number(self, team_name: str) -> Dict:
         try:
 
-            best_match, score = process.extractOne(self.team_name, self.team_data.keys())
+            best_match, score = process.extractOne(team_name, self.team_data.keys())
             team_number = self.team_data[best_match]
 
-            return FinalResultTool(api_data=TeamNumber(data={"team_number": team_number}))
+            return {"team_number": team_number}
         except Exception as e:
             return f"Error fetching team info: {str(e)}"
+        
+    def _extract_team_number_from_name(self, tool_message: lr.agent.ToolMessage) -> None:
+        if not hasattr(tool_message, 'team_number') or tool_message.team_number == 'None':
+                if tool_message.team_name != 'None':
+                    team_number = self.fetch_team_number(team_name=tool_message.team_name)['team_number']
+                    tool_message.team_number = int(team_number)
 
 ################################################################################
 # ------------------------------- FetchTeamInfo ------------------------------ #
@@ -54,10 +55,9 @@ class FetchTeamInfo(lr.agent.ToolMessage):
 
     def handle(self) -> FinalResultTool:
         try:
-            if self.team_number == 'None':
-                if self.team_name != 'None':
-                    team_number = ExtractTeamNumber(team_name=self.team_name).handle().api_data.data['team_number']
-                    self.team_number = int(team_number)
+            
+            ExtractTeamNumber()._extract_team_number_from_name(tool_message=self)
+                    
             team_data = tba_api.get_team_info(self.team_number)
             return FinalResultTool(api_data=TeamInfo(data=team_data))
         except Exception as e:
@@ -80,10 +80,9 @@ class FetchTeamEvents(lr.agent.ToolMessage):
 
     def handle(self) -> FinalResultTool:
         try:
-            if self.team_number == 'None':
-                if self.team_name != 'None':
-                    team_number = ExtractTeamNumber(team_name=self.team_name).handle().api_data.data['team_number']
-                    self.team_number = int(team_number)
+
+            ExtractTeamNumber()._extract_team_number_from_name(tool_message=self)
+
             team_events = tba_api.get_team_events(team_number=self.team_number, year=self.year)
             team_events_dict = {event['name']:event for event in team_events}
             team_events_dict = {f"Events attended by team {self.team_number}": team_events_dict}

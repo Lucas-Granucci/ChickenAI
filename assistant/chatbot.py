@@ -114,11 +114,11 @@ class ChatBot:
         print()
 
     def prompt_input_mode(self):
-        print("\033[3;32m" + "Enter 'text' to type or 'speech' to speak: " + "\033[0m", end="", flush=True)
+        print("\033[3;32m" + "Enter 'text' to type or 'voice' to speak: " + "\033[0m", end="", flush=True)
         input_mode = input()
 
-        while input_mode.lower() not in ["text", "speech"]:
-            print("\033[1;31m" + "Invalid input. Please enter 'text' or 'speech'." + "\033[0m")
+        while input_mode.lower() not in ["text", "voice"]:
+            print("\033[1;31m" + "Invalid input. Please enter 'text' or 'voice'." + "\033[0m")
             input_mode = input()
 
         self.input_mode = input_mode.lower()

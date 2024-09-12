@@ -5,7 +5,7 @@ import langroid.language_models as lm
 from assistant.chatbot import ChatBot
 from assistant.query_processor import QueryProcessor
 from assistant.tba.tba_api import TheBlueAllianceAPI
-from assistant.tba.tba_tool import FetchTeamInfo, FetchTeamEvents, FetchAllEvents, ExtractTeamNumber
+from assistant.tba.tba_tools import FetchTeamInfo, FetchTeamEvents, FetchAllEvents, ExtractTeamNumber
 
 # Initialize the TBA API
 tba_api = TheBlueAllianceAPI(os.getenv("TBA_API_KEY"))
@@ -38,7 +38,7 @@ def run(model: str = ""):
                 "parameter_name": "parameter_value"
             }
 
-            IMPORTANT: If an parameter is missing, default to "None". Even if a parameter is missisng, still include all of the parameters.
+            IMPORTANT: If an parameter is missing, default to "None". Even if a parameter is missisng, still include in the tool request.
             """,
     )
     backend_agent = lr.ChatAgent(backend_agent_config)
@@ -54,7 +54,8 @@ def run(model: str = ""):
         system_message="""
         You are a FIRST Robotics expert. Use the provided team information to answer questions about the team.
         Provide a comprehensive and engaging response based on the given information and the user's original query.
-        Only use the information provided in the team data. Do not invent or assume any additional information.
+        Only use the information provided in the team data. Do not invent or assume any additional information. Be entertaining,
+        and if possible, be humorous in your response.
         """,
     )
     response_agent = lr.ChatAgent(response_agent_config)
