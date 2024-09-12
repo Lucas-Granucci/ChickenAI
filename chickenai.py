@@ -11,15 +11,16 @@ from assistant.tba.tba_tools import FetchTeamInfo, FetchTeamEvents, FetchAllEven
 tba_api = TheBlueAllianceAPI(os.getenv("TBA_API_KEY"))
         
 # Define run() function for interactive chat loop
-def run(model: str = ""):
+def run():
 
-    # Initialize the LLM (locally hosted)
+    # Initialize the LLM (groq cloud model)
     lm_config = lm.OpenAIGPTConfig(
-        chat_model=model,
-        chat_context_length=5000
+        api_base="https://api.groq.com/openai/v1",
+        api_key=os.getenv("GROQ_CHICKENAI"),
+        chat_model="llama-3.1-8b-instant"
     )
     
-    # Backend LLM configuration
+    # --------------------------- Backend LLM configuration --------------------------- #
     backend_agent_config = lr.ChatAgentConfig(
         llm=lm_config,
         system_message="""
@@ -38,17 +39,17 @@ def run(model: str = ""):
                 "parameter_name": "parameter_value"
             }
 
-            IMPORTANT: If an parameter is missing, default to "None". Even if a parameter is missisng, still include in the tool request.
+            IMPORTANT: If an parameter is missing, default to "None". INCLUDE ALL PARAMETERS IN TOOL REQUEST.
             """,
     )
     backend_agent = lr.ChatAgent(backend_agent_config)
 
-    # Enable tools
+    # Enable Backend Agent toolstools
     backend_agent.enable_message(FetchTeamInfo)
     backend_agent.enable_message(FetchTeamEvents)
     backend_agent.enable_message(FetchAllEvents)
 
-    # Response generation LLM configuration
+    # --------------------------- Response generation LLM configuration --------------------------- #
     response_agent_config = lr.ChatAgentConfig(
         llm=lm_config,
         system_message="""
@@ -73,4 +74,4 @@ def run(model: str = ""):
     chatbot.start_chat()
 
 if __name__ == "__main__":
-    run("local/localhost:1234/v1")
+    run()

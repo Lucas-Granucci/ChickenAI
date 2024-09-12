@@ -33,7 +33,7 @@ class ExtractTeamNumber():
         except Exception as e:
             return f"Error fetching team info: {str(e)}"
         
-    def _extract_team_number_from_name(self, tool_message: lr.agent.ToolMessage) -> None:
+    def extract_team_number_from_name(self, tool_message: lr.agent.ToolMessage) -> None:
         if not hasattr(tool_message, 'team_number') or tool_message.team_number == 'None':
                 if tool_message.team_name != 'None':
                     team_number = self.fetch_team_number(team_name=tool_message.team_name)['team_number']
@@ -56,7 +56,7 @@ class FetchTeamInfo(lr.agent.ToolMessage):
     def handle(self) -> FinalResultTool:
         try:
             
-            ExtractTeamNumber()._extract_team_number_from_name(tool_message=self)
+            ExtractTeamNumber().extract_team_number_from_name(tool_message=self)
                     
             team_data = tba_api.get_team_info(self.team_number)
             return FinalResultTool(api_data=TeamInfo(data=team_data))
@@ -81,7 +81,7 @@ class FetchTeamEvents(lr.agent.ToolMessage):
     def handle(self) -> FinalResultTool:
         try:
 
-            ExtractTeamNumber()._extract_team_number_from_name(tool_message=self)
+            ExtractTeamNumber().extract_team_number_from_name(tool_message=self)
 
             team_events = tba_api.get_team_events(team_number=self.team_number, year=self.year)
             team_events_dict = {event['name']:event for event in team_events}

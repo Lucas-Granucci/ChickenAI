@@ -28,7 +28,7 @@ class TheBlueAllianceAPI:
         if year is None:
             year = dt.datetime.now().year
 
-        endpoint = f"/team/frc{team_number}/events/{year}/simple"
+        endpoint = f"/team/frc{team_number}/events/{year}"
         return self.request(endpoint)
     
     def get_team_matches(self, team_number: int, year: int = None) -> Dict:
