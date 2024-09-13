@@ -15,6 +15,7 @@ ChickenAI is an AI-powered chatbot that provides up-to-date information about FI
 - Langroid library
 - The Blue Alliance API key
 - LLM Model (see setup options below)
+- requirements.txt
 
 ## Installation
 
@@ -66,13 +67,17 @@ Choose one of the following options to set up your Language Model:
 
 ## Usage
 
-Run the ChickenAI chatbot:
+Run the ChickenAI chatbot from the Command Line Interface (CLI):
 
 ```bash
-python chickenai.py
+python main_cli.py
 ```
 
-Start chatting with ChickenAI and enjoy access to the latest FIRST Robotics information!
+Run the ChickenAI chatbot from the Web Interface (Streamlit):
+
+```bash
+streamlit run app.py
+```
 
 ---
 
