@@ -24,10 +24,9 @@ ChickenAI is an AI-powered chatbot that provides up-to-date information about FI
    cd ChickenAI
    ```
 
-2. Install the required dependencies with Anaconda:
+2. Install the required dependencies with pip:
    ```bash
-   conda create --name chickenai --file requirements.txt
-   conda activate chickenai
+   pip install -r requirements.txt
    ```
 
 3. Set up your The Blue Alliance API key as an environment variable.
