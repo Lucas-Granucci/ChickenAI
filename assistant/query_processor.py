@@ -14,14 +14,6 @@ class QueryProcessor:
     def generate_response(self, message: str) -> str:
 
         backend_result = self.fetch_backend_data(message)
-
-        if isinstance(backend_result, str):  # Error case
-            return backend_result
-        
-        validation_message = f"""
-        User Query: {message}
-        Retrieved Information: {json.dumps(backend_result, indent=2)}
-        """
         
         return self.retrieve_llm_response(message, backend_result)
 
@@ -32,6 +24,8 @@ class QueryProcessor:
 
         if isinstance(backend_result, FinalResultTool) and hasattr(backend_result, 'api_data'):
             return backend_result.api_data.data
+        elif isinstance(backend_result, str):
+            return backend_result # Return the error message
         else:
             return f"Error: {backend_result}"
 
