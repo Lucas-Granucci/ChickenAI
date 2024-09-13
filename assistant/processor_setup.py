@@ -39,6 +39,9 @@ def setup_query_processor(chat_model: str = "llama-3.1-8b-instant") -> QueryProc
             }
 
             IMPORTANT: If an parameter is missing, default to "None". INCLUDE ALL PARAMETERS IN TOOL REQUEST.
+
+            If no tool is needed or you don't have the required tool, try to answer the question directly. DO NOT
+            make up any information in your response.
             """,
     )
     backend_agent = lr.ChatAgent(backend_agent_config)

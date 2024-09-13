@@ -17,15 +17,13 @@ for msg in st.session_state.messages:
     else:
         st.chat_message(msg["role"], avatar="🐔").write(msg["content"])
 
-def get_query_response(prompt):
-    return "This is a test response: " + prompt
-
 if prompt := st.chat_input():
 
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user", avatar="🐔").write(prompt)
 
-    msg = get_processor().generate_response(prompt)
+    with st.spinner("Thinking..."):
+        msg = get_processor().generate_response(prompt)
 
     st.session_state.messages.append({"role": "assistant", "content": msg})
     st.chat_message("assistant", avatar="🤖").write(msg)
