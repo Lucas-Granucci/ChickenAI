@@ -10,13 +10,13 @@ from assistant.tba.tba_tools import FetchTeamInfo, FetchTeamEvents, FetchAllEven
 tba_api = TheBlueAllianceAPI(os.getenv("TBA_API_KEY"))
         
 # Prepare query processor with LLM prompt templates
-def setup_query_processor():
+def setup_query_processor(chat_model: str = "llama-3.1-8b-instant") -> QueryProcessor:
 
     # Initialize the LLM (groq cloud model)
     lm_config = lm.OpenAIGPTConfig(
         api_base="https://api.groq.com/openai/v1",
         api_key=os.getenv("GROQ_CHICKENAI"),
-        chat_model="llama-3.1-8b-instant"
+        chat_model=chat_model
     )
     
     # --------------------------- Backend LLM configuration --------------------------- #

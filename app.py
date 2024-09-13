@@ -3,7 +3,7 @@ from assistant.processor_setup import setup_query_processor
 
 @st.cache_resource
 def get_processor():
-    return setup_query_processor()
+    return setup_query_processor(chat_model='llama-3.1-70b-versatile')
 
 st.title("🐔⚙️ Chicken-AI")
 st.caption("🚀 A Streamlit chatbot powered by GroqCloud and The Blue Alliance")
