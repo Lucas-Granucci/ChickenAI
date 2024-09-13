@@ -2,7 +2,6 @@ import os
 import langroid as lr
 import langroid.language_models as lm
 
-from assistant.chatbot import ChatBot
 from assistant.query_processor import QueryProcessor
 from assistant.tba.tba_api import TheBlueAllianceAPI
 from assistant.tba.tba_tools import FetchTeamInfo, FetchTeamEvents, FetchAllEvents, ExtractTeamNumber
@@ -10,8 +9,8 @@ from assistant.tba.tba_tools import FetchTeamInfo, FetchTeamEvents, FetchAllEven
 # Initialize the TBA API
 tba_api = TheBlueAllianceAPI(os.getenv("TBA_API_KEY"))
         
-# Define run() function for interactive chat loop
-def run():
+# Prepare query processor with LLM prompt templates
+def setup_query_processor():
 
     # Initialize the LLM (groq cloud model)
     lm_config = lm.OpenAIGPTConfig(
@@ -66,12 +65,5 @@ def run():
         response_agent=response_agent,
         backend_agent=backend_agent
     )
-        
-    # Initialize the chatbot
-    chatbot = ChatBot(query_processor = query_processor.generate_response, dictate_response = False)
 
-    # Start the chatbot
-    chatbot.start_chat()
-
-if __name__ == "__main__":
-    run()
+    return query_processor

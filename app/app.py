@@ -1,4 +1,9 @@
 import streamlit as st
+from assistant.processor_setup import setup_processor
+
+@st.cache_resource
+def get_processor():
+    return setup_processor()
 
 st.title("🐔⚙️ Chicken-AI")
 st.caption("🚀 A Streamlit chatbot powered by GroqCloud and The Blue Alliance")
@@ -20,7 +25,7 @@ if prompt := st.chat_input():
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user", avatar="💬").write(prompt)
 
-    msg = get_query_response(prompt)
+    msg = get_processor.generate_response(prompt)
 
     st.session_state.messages.append({"role": "assistant", "content": msg})
     st.chat_message("assistant", avatar="🤖").write(msg)
