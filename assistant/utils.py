@@ -1,15 +1,6 @@
-import pyautogui
-from threading import Thread
-
 import langroid as lr
 from langroid.pydantic_v1 import BaseModel, Field
 from langroid.agent.tools.orchestration import FinalResultTool
-
-# Editable text field for correcting mistakes in dictation input
-def editable_input(text: str) -> str:
-    Thread(target=pyautogui.write, args=(text,)).start()
-    modified_input = input()
-    return modified_input
 
 ################################################################################
 # --------------------------------- ErrorTool -------------------------------- #

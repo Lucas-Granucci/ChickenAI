@@ -2,8 +2,6 @@ import pyttsx3
 import keyboard
 import speech_recognition as sr
 
-from assistant.utils import editable_input
-
 class ChatBot:
 
     def __init__(self, query_processor, dictate_response=False) -> None:
@@ -37,7 +35,7 @@ class ChatBot:
                     my_text = self.record_audio()
 
                 if my_text:
-                    user_query = editable_input(my_text)
+                    user_query = my_text
                 
             # If there is no query, don't make a request to the query processor
             if not user_query:

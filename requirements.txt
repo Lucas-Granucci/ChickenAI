@@ -1,7 +1,6 @@
 fuzzywuzzy==0.18.0
 keyboard==0.13.5
 langroid==0.15.2
-PyAutoGUI==0.9.54
 pyttsx3==2.91
 Requests==2.32.3
 SpeechRecognition==3.10.4
