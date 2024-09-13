@@ -1,6 +1,9 @@
 import streamlit as st
 from assistant.processor_setup import setup_query_processor
 
+import os
+os.environ['PYTHONIOENCODING'] = 'utf-8'
+
 @st.cache_resource
 def get_processor():
     return setup_query_processor(chat_model='llama-3.1-70b-versatile')

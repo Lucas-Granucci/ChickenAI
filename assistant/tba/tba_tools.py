@@ -59,7 +59,7 @@ class FetchTeamInfo(lr.agent.ToolMessage):
             ExtractTeamNumber().extract_team_number_from_name(tool_message=self)
                     
             team_data = tba_api.get_team_info(self.team_number)
-            return FinalResultTool(api_data=TeamInfo(data=team_data))
+            return FinalResultTool(tool_data=TeamInfo(data=team_data))
         except Exception as e:
             return f"Error fetching team info: {str(e)}"
         
@@ -86,7 +86,7 @@ class FetchTeamEvents(lr.agent.ToolMessage):
             team_events = tba_api.get_team_events(team_number=self.team_number, year=self.year)
             team_events_dict = {event['name']:event for event in team_events}
             team_events_dict = {f"Events attended by team {self.team_number}": team_events_dict}
-            return FinalResultTool(api_data=TeamEvents(data=team_events_dict))
+            return FinalResultTool(tool_data=TeamEvents(data=team_events_dict))
         except Exception as e:
             return f"Error fetching team events: {str(e)}"
         
@@ -120,6 +120,6 @@ class FetchAllEvents(lr.agent.ToolMessage):
 
             events_dict = {f"Event {i+1}: {event['name']}": event for i, event in enumerate(all_events)}  # Convert to dict with index as key for easier access
             
-            return FinalResultTool(api_data=AllEvents(data=events_dict))
+            return FinalResultTool(tool_data=AllEvents(data=events_dict))
         except Exception as e:
             return f"Error fetching all events: {str(e)}"

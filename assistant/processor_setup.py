@@ -4,7 +4,8 @@ import langroid.language_models as lm
 
 from assistant.query_processor import QueryProcessor
 from assistant.tba.tba_api import TheBlueAllianceAPI
-from assistant.tba.tba_tools import FetchTeamInfo, FetchTeamEvents, FetchAllEvents, ExtractTeamNumber
+from assistant.tba.tba_tools import FetchTeamInfo, FetchTeamEvents, FetchAllEvents
+from assistant.utils import ErrorHandlingTool, DirectResponseTool
 
 # Initialize the TBA API
 tba_api = TheBlueAllianceAPI(os.getenv("TBA_API_KEY"))
@@ -40,8 +41,18 @@ def setup_query_processor(chat_model: str = "llama-3.1-8b-instant") -> QueryProc
 
             IMPORTANT: If an parameter is missing, default to "None". INCLUDE ALL PARAMETERS IN TOOL REQUEST.
 
-            If no tool is needed or you don't have the required tool, try to answer the question directly. DO NOT
-            make up any information in your response. If you encounter an error, respond with the error message.
+            If no tool is needed or you don't have the required tool, answer the question directly with
+            the following format:
+            {
+                "request": "respond_directly",
+                direct_response: <response text here>
+            }
+            
+            If you encounter an error, respond with the following request:
+            {
+                "request": "handle_error",
+                "error_message": <error message here>
+            }
             """,
     )
     backend_agent = lr.ChatAgent(backend_agent_config)
@@ -50,6 +61,8 @@ def setup_query_processor(chat_model: str = "llama-3.1-8b-instant") -> QueryProc
     backend_agent.enable_message(FetchTeamInfo)
     backend_agent.enable_message(FetchTeamEvents)
     backend_agent.enable_message(FetchAllEvents)
+    backend_agent.enable_message(ErrorHandlingTool)
+    backend_agent.enable_message(DirectResponseTool)
 
     # --------------------------- Response generation LLM configuration --------------------------- #
     response_agent_config = lr.ChatAgentConfig(

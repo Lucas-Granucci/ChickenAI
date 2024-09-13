@@ -22,20 +22,18 @@ class QueryProcessor:
         backend_task = lr.Task(self.backend_agent, interactive=False)
         backend_result = backend_task[FinalResultTool].run(message)
 
-        if isinstance(backend_result, FinalResultTool) and hasattr(backend_result, 'api_data'):
-            return backend_result.api_data.data
-        elif isinstance(backend_result, str):
-            return backend_result # Return the error message
+        if isinstance(backend_result, FinalResultTool) and hasattr(backend_result, 'tool_data'):
+            return backend_result.tool_data.data
         else:
             return f"Error: {backend_result}"
 
-    def retrieve_llm_response(self, message: str, api_data: Dict[str, Any]) -> str:
+    def retrieve_llm_response(self, message: str, tool_data: Dict[str, Any]) -> str:
         context = f"""
         Use the retrieved information to answer the user's question. Assume that the retrieved information was 
         collected in order to better answer the user's question.
 
         Original Query: {message}
-        Retrieved Information: {json.dumps(api_data, indent=2)}
+        Retrieved Information: {json.dumps(tool_data, indent=2)}
 
         Instructions:
         1. Analyze the original query and the retrieved information.
