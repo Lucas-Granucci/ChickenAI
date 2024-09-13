@@ -48,7 +48,7 @@ class TeamInfo(BaseModel):
 
 class FetchTeamInfo(lr.agent.ToolMessage):
     request: str = "fetch_team_info"
-    purpose: str = "To extract team number and fetch FIRST Robotics team information from the API. (eg. location, rookie year, nickname, associations, etc.)"
+    purpose: str = "To extract team number and fetch FIRST Robotics team information from the API. (eg. location, rookie year, nickname, associations, etc.) Use to talk about a team (eg. tell me about team <team_name>)"
 
     team_number: Any = Field(None, description="The team number to fetch information for")
     team_name: Any = Field(None, description="The team name to fetch information for")
