@@ -41,7 +41,7 @@ def setup_query_processor(chat_model: str = "llama-3.1-8b-instant") -> QueryProc
             IMPORTANT: If an parameter is missing, default to "None". INCLUDE ALL PARAMETERS IN TOOL REQUEST.
 
             If no tool is needed or you don't have the required tool, try to answer the question directly. DO NOT
-            make up any information in your response.
+            make up any information in your response. If you encounter an error, respond with the error message.
             """,
     )
     backend_agent = lr.ChatAgent(backend_agent_config)
@@ -58,7 +58,7 @@ def setup_query_processor(chat_model: str = "llama-3.1-8b-instant") -> QueryProc
         You are a FIRST Robotics expert. Use the provided team information to answer questions about the team.
         Provide a comprehensive and engaging response based on the given information and the user's original query.
         Only use the information provided in the team data. Do not invent or assume any additional information. Be entertaining,
-        and if possible, be humorous in your response.
+        and if possible, be humorous in your response. If there is an error, respond with the error message.
         """,
     )
     response_agent = lr.ChatAgent(response_agent_config)
