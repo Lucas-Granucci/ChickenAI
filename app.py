@@ -1,14 +1,12 @@
 import streamlit as st
 from assistant.processor_setup import setup_query_processor
-from assistant.voice.voice import TTSEngine
 import os
+
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 
 @st.cache_resource
 def get_processor():
     return setup_query_processor(chat_model='llama-3.1-70b-versatile')
-
-voice_model = TTSEngine()
 
 st.title("🐔⚙️ Chicken-AI")
 st.caption("🚀 A Streamlit chatbot powered by GroqCloud and The Blue Alliance")
@@ -23,7 +21,6 @@ for msg in st.session_state.messages:
         st.chat_message(msg["role"], avatar="🐔").write(msg["content"])
 
 if prompt := st.chat_input():
-    voice_model.stop()
 
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user", avatar="🐔").write(prompt)
@@ -33,4 +30,3 @@ if prompt := st.chat_input():
 
     st.session_state.messages.append({"role": "assistant", "content": msg})
     st.chat_message("assistant", avatar="🤖").write(msg)
-    voice_model.say(msg)
