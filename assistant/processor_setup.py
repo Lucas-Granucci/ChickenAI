@@ -17,7 +17,8 @@ def setup_query_processor(chat_model: str = "llama-3.1-8b-instant") -> QueryProc
     lm_config = lm.OpenAIGPTConfig(
         api_base="https://api.groq.com/openai/v1",
         api_key=os.getenv("GROQ_CHICKENAI"),
-        chat_model=chat_model
+        chat_model=chat_model,
+        chat_context_length=16384
     )
     
     # --------------------------- Backend LLM configuration --------------------------- #
