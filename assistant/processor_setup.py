@@ -19,7 +19,7 @@ def setup_query_processor(chat_model: str = "llama-3.1-8b-instant") -> QueryProc
         api_key=os.getenv("GROQ_CHICKENAI"),
         chat_model=chat_model,
         max_output_tokens=1024,
-        chat_context_length=8000
+        chat_context_length=16000
     )
     
     # --------------------------- Backend LLM configuration --------------------------- #
