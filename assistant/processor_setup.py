@@ -18,6 +18,7 @@ def setup_query_processor(chat_model: str = "llama-3.1-8b-instant") -> QueryProc
         api_base="https://api.groq.com/openai/v1",
         api_key=os.getenv("GROQ_CHICKENAI"),
         chat_model=chat_model,
+        max_output_tokens=1024,
         chat_context_length=8000
     )
     
