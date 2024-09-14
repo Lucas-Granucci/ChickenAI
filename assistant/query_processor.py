@@ -13,9 +13,16 @@ class QueryProcessor:
 
     def generate_response(self, message: str) -> str:
 
+        self.reset_agents()
+
         backend_result = self.fetch_backend_data(message)
         
         return self.retrieve_llm_response(message, backend_result)
+    
+    def reset_agents(self):
+        # Reset the conversation history for both agents
+        self.backend_agent.clear_history()
+        self.response_agent.clear_history()
 
     def fetch_backend_data(self, message: str) -> Dict[str, Any] | str:
 
