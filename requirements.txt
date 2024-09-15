@@ -3,4 +3,5 @@ keyboard==0.13.5
 langroid==0.15.2
 python-Levenshtein==0.25.1
 Requests==2.32.3
+SpeechRecognition==3.10.4
 streamlit==1.38.0

@@ -1,0 +1,149 @@
+{
+    "2012": {
+        "FIRST In Michigan": "2012fim",
+        "FIRST Mid-Atlantic": "2012mar"
+    },
+    "2013": {
+        "FIRST In Michigan": "2013fim",
+        "FIRST Mid-Atlantic": "2013mar"
+    },
+    "2014": {
+        "FIRST In Michigan": "2014fim",
+        "FIRST Mid-Atlantic": "2014mar",
+        "New England": "2014ne",
+        "Pacific Northwest": "2014pnw"
+    },
+    "2015": {
+        "FIRST In Michigan": "2015fim",
+        "FIRST Indiana Robotics": "2015in",
+        "FIRST Mid-Atlantic": "2015mar",
+        "New England": "2015ne",
+        "Pacific Northwest": "2015pnw"
+    },
+    "2016": {
+        "FIRST Chesapeake": "2016chs",
+        "FIRST In Michigan": "2016fim",
+        "FIRST Indiana Robotics": "2016in",
+        "FIRST Mid-Atlantic": "2016mar",
+        "FIRST North Carolina": "2016nc",
+        "New England": "2016ne",
+        "Peachtree": "2016pch",
+        "Pacific Northwest": "2016pnw"
+    },
+    "2017": {
+        "FIRST Chesapeake": "2017chs",
+        "FIRST In Michigan": "2017fim",
+        "FIRST Indiana Robotics": "2017in",
+        "FIRST Israel": "2017isr",
+        "FIRST Mid-Atlantic": "2017mar",
+        "FIRST North Carolina": "2017nc",
+        "New England": "2017ne",
+        "Ontario": "2017ont",
+        "Peachtree": "2017pch",
+        "Pacific Northwest": "2017pnw"
+    },
+    "2018": {
+        "FIRST Chesapeake": "2018chs",
+        "FIRST In Michigan": "2018fim",
+        "FIRST Indiana Robotics": "2018in",
+        "FIRST Israel": "2018isr",
+        "FIRST Mid-Atlantic": "2018mar",
+        "FIRST North Carolina": "2018nc",
+        "New England": "2018ne",
+        "Ontario": "2018ont",
+        "Peachtree": "2018pch",
+        "Pacific Northwest": "2018pnw"
+    },
+    "2019": {
+        "FIRST Chesapeake": "2019chs",
+        "FIRST In Michigan": "2019fim",
+        "FIRST Mid-Atlantic": "2019fma",
+        "FIRST North Carolina": "2019fnc",
+        "FIRST Indiana Robotics": "2019in",
+        "FIRST Israel": "2019isr",
+        "New England": "2019ne",
+        "Ontario": "2019ont",
+        "Peachtree": "2019pch",
+        "Pacific Northwest": "2019pnw",
+        "FIRST In Texas": "2019tx"
+    },
+    "2020": {
+        "FIRST Chesapeake": "2020chs",
+        "FIRST In Michigan": "2020fim",
+        "FIRST Mid-Atlantic": "2020fma",
+        "FIRST North Carolina": "2020fnc",
+        "FIRST Indiana Robotics": "2020in",
+        "FIRST Israel": "2020isr",
+        "New England": "2020ne",
+        "Ontario": "2020ont",
+        "Peachtree": "2020pch",
+        "Pacific Northwest": "2020pnw",
+        "FIRST In Texas": "2020tx"
+    },
+    "2021": {
+        "FIRST Chesapeake": "2021chs",
+        "FIRST In Michigan": "2021fim",
+        "FIRST Indiana Robotics": "2021fin",
+        "FIRST In Texas": "2021fit",
+        "FIRST Mid-Atlantic": "2021fma",
+        "FIRST North Carolina": "2021fnc",
+        "FIRST Israel": "2021isr",
+        "New England": "2021ne",
+        "Ontario": "2021ont",
+        "Peachtree": "2021pch",
+        "Pacific Northwest": "2021pnw"
+    },
+    "2022": {
+        "FIRST Chesapeake": "2022chs",
+        "FIRST In Michigan": "2022fim",
+        "FIRST Indiana Robotics": "2022fin",
+        "FIRST In Texas": "2022fit",
+        "FIRST Mid-Atlantic": "2022fma",
+        "FIRST North Carolina": "2022fnc",
+        "FIRST Israel": "2022isr",
+        "New England": "2022ne",
+        "Ontario": "2022ont",
+        "Peachtree": "2022pch",
+        "Pacific Northwest": "2022pnw"
+    },
+    "2023": {
+        "FIRST Chesapeake": "2023chs",
+        "FIRST In Michigan": "2023fim",
+        "FIRST Indiana Robotics": "2023fin",
+        "FIRST In Texas": "2023fit",
+        "FIRST Mid-Atlantic": "2023fma",
+        "FIRST North Carolina": "2023fnc",
+        "FIRST Israel": "2023isr",
+        "New England": "2023ne",
+        "Ontario": "2023ont",
+        "Peachtree": "2023pch",
+        "Pacific Northwest": "2023pnw"
+    },
+    "2024": {
+        "FIRST Chesapeake": "2024chs",
+        "FIRST In Michigan": "2024fim",
+        "FIRST Indiana Robotics": "2024fin",
+        "FIRST In Texas": "2024fit",
+        "FIRST Mid-Atlantic": "2024fma",
+        "FIRST North Carolina": "2024fnc",
+        "FIRST Israel": "2024isr",
+        "New England": "2024ne",
+        "Ontario": "2024ont",
+        "Peachtree": "2024pch",
+        "Pacific Northwest": "2024pnw"
+    },
+    "2025": {
+        "FIRST Chesapeake": "2025chs",
+        "FIRST In Michigan": "2025fim",
+        "FIRST Indiana Robotics": "2025fin",
+        "FIRST In Texas": "2025fit",
+        "FIRST Mid-Atlantic": "2025fma",
+        "FIRST North Carolina": "2025fnc",
+        "FIRST South Carolina": "2025fsc",
+        "FIRST Israel": "2025isr",
+        "New England": "2025ne",
+        "Ontario": "2025ont",
+        "Peachtree": "2025pch",
+        "Pacific Northwest": "2025pnw"
+    }
+}

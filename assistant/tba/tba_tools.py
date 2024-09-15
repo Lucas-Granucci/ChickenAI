@@ -4,11 +4,18 @@ import langroid as lr
 from langroid.pydantic_v1 import BaseModel, Field
 from langroid.agent.tools.orchestration import FinalResultTool
 
+import datetime
 from typing import Optional, Dict, Any
 from fuzzywuzzy import process
 from assistant.tba.tba_api import TheBlueAllianceAPI
 
 tba_api = TheBlueAllianceAPI(os.getenv("TBA_API_KEY"))
+
+def fix_missing_param(param_name, tool_message):
+    if not hasattr(tool_message, param_name) or getattr(tool_message, param_name) == 'None':
+        return None
+    else:
+        return getattr(tool_message, param_name)
 
 ################################################################################
 # ----------------------------- ExtractTeamNumber ---------------------------- #
@@ -31,13 +38,46 @@ class ExtractTeamNumber():
 
             return {"team_number": team_number}
         except Exception as e:
-            return f"Error fetching team info: {str(e)}"
+            return f"Error extracting team number: {str(e)}"
         
     def extract_team_number_from_name(self, tool_message: lr.agent.ToolMessage) -> None:
         if not hasattr(tool_message, 'team_number') or tool_message.team_number == 'None':
-                if tool_message.team_name != 'None':
-                    team_number = self.fetch_team_number(team_name=tool_message.team_name)['team_number']
-                    tool_message.team_number = int(team_number)
+            if tool_message.team_name != 'None':
+                team_number = self.fetch_team_number(team_name=tool_message.team_name)['team_number']
+                tool_message.team_number = int(team_number)
+
+################################################################################
+# ----------------------------- ExtractDistrictCode ---------------------------- #
+################################################################################
+
+class ExtractDistrictCode():
+    """
+    Fetch the district code given the name of a district and a year
+    """
+
+    def __init__(self):
+        with open('data/district_data/name_to_code.json', 'r') as f:
+            self.district_data = json.load(f)
+
+    def fetch_district_code(self, district_name: str, year: int) -> Dict:
+        try:
+
+            if year == None:
+                year = datetime.datetime.now().year
+
+            valid_district_data = self.district_data[str(year)]
+
+            best_match, score = process.extractOne(district_name, valid_district_data.keys())
+            district_code = valid_district_data[best_match]
+
+            return {"district_code": district_code}
+        except Exception as e:
+            return f"Error extracting district code: {str(e)}"
+        
+    def extract_district_code_from_name(self, tool_message: lr.agent.ToolMessage) -> None:
+        if tool_message.district_name != 'None':
+            district_code = self.fetch_district_code(district_name=tool_message.district_name, year=tool_message.year)['district_code']
+            tool_message.district_code = district_code
 
 ################################################################################
 # ------------------------------- FetchTeamInfo ------------------------------ #
@@ -91,6 +131,34 @@ class FetchTeamEvents(lr.agent.ToolMessage):
             return f"Error fetching team events: {str(e)}"
         
 ################################################################################
+# ------------------------------ FetchTeamAwards ----------------------------- #
+################################################################################
+
+class TeamAwards(BaseModel):
+    data: dict = Field(..., description="team awards")
+
+class FetchTeamAwards(lr.agent.ToolMessage):
+    request: str = "fetch_team_awards"
+    purpose: str = "Fetches awards won by a team. Useful for questions like 'What awards has team <team_name> won?'"
+
+    team_number: Any = Field(None, description="The team number to fetch awards for")
+    team_name: Any = Field(None, description="The team name to fetch awards for")
+    year: Any = Field(None, description="The year to fetch awards for")
+
+    def handle(self) -> FinalResultTool:
+        try:
+            ExtractTeamNumber().extract_team_number_from_name(tool_message=self)
+
+            self.year = fix_missing_param(param_name="year", tool_message=self)
+            
+            team_awards = tba_api.get_team_awards(team_number=self.team_number, year=self.year)
+            team_awards_dict = {award['name']: award for award in team_awards}
+            return FinalResultTool(tool_data=TeamAwards(data=team_awards_dict))
+        except Exception as e:
+            return f"Error fetching team awards: {str(e)}"
+
+        
+################################################################################
 # -------------------------------- FetchEvents ------------------------------- #
 ################################################################################
 
@@ -123,3 +191,35 @@ class FetchAllEvents(lr.agent.ToolMessage):
             return FinalResultTool(tool_data=AllEvents(data=events_dict))
         except Exception as e:
             return f"Error fetching all events: {str(e)}"
+        
+################################################################################
+# --------------------------- FetchDistrictRankings -------------------------- #
+################################################################################
+
+class DistrictRankings(BaseModel):
+    data: dict = Field(..., description="district rankings")
+
+class FetchDistrictRankings(lr.agent.ToolMessage):
+    request: str = "fetch_district_rankings"
+    purpose: str = "Fetch rankings within a district. Useful for questions like 'Who is ranked highest in <district_name>?'"
+
+    district_name: str = Field(..., description="The district name to fetch rankings for")
+    year: Any = Field(None, description="The year to fetch district rankings for")
+
+    def handle(self) -> FinalResultTool:
+        try:
+
+            with open('data/team_data/number_to_name.json', 'r') as f:
+                self.team_number_to_name = json.load(f)
+
+            self.year = fix_missing_param(param_name="year", tool_message=self)
+
+            ExtractDistrictCode().extract_district_code_from_name(tool_message=self)
+
+            district_rankings = tba_api.get_district_rankings(self.district_code)
+            cleaned_district_data = { team['team_key'][3:]: {'rank': team['rank'], 'total_points': team['point_total']} for team in district_rankings[:10] }
+            district_rankings_data = { f"{self.team_number_to_name[number]} ({number})":data for number, data in cleaned_district_data.items() }
+
+            return FinalResultTool(tool_data=DistrictRankings(data=district_rankings_data))
+        except Exception as e:
+            return f"Error fetching district rankings: {str(e)}"

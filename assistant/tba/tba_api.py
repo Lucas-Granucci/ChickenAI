@@ -25,10 +25,16 @@ class TheBlueAllianceAPI:
     
     def get_team_events(self, team_number: int, year: int) -> Dict:
 
-        if year is None:
-            year = dt.datetime.now().year
-
         endpoint = f"/team/frc{team_number}/events/{year}"
+        return self.request(endpoint)
+    
+    def get_team_awards(self, team_number: int, year: int = None) -> Dict:
+
+        if year is None:
+            endpoint = f"/team/frc{team_number}/awards"
+        else:
+            endpoint = f"/team/frc{team_number}/awards/{year}"
+
         return self.request(endpoint)
     
     def get_team_matches(self, team_number: int, year: int = None) -> Dict:
@@ -43,4 +49,10 @@ class TheBlueAllianceAPI:
 
     def get_events_in_year(self, year: int) -> Dict:
         endpoint = f"/events/{year}/simple"
+        return self.request(endpoint)
+    
+    # --------------- DISTRICT ENDPOINTS -------------- #
+
+    def get_district_rankings(self, district_code: str) -> Dict:
+        endpoint = f"/district/{district_code}/rankings"
         return self.request(endpoint)
