@@ -4,80 +4,11 @@ import langroid as lr
 from langroid.pydantic_v1 import BaseModel, Field
 from langroid.agent.tools.orchestration import FinalResultTool
 
-import datetime
-from typing import Optional, Dict, Any
-from fuzzywuzzy import process
+from typing import Optional, Any
 from assistant.tba.tba_api import TheBlueAllianceAPI
+from assistant.utils import ExtractTeamNumber, ExtractDistrictCode, fix_missing_param
 
 tba_api = TheBlueAllianceAPI(os.getenv("TBA_API_KEY"))
-
-def fix_missing_param(param_name, tool_message):
-    if not hasattr(tool_message, param_name) or getattr(tool_message, param_name) == 'None':
-        return None
-    else:
-        return getattr(tool_message, param_name)
-
-################################################################################
-# ----------------------------- ExtractTeamNumber ---------------------------- #
-################################################################################
-
-class ExtractTeamNumber():
-    """
-    Fetch the team number given the name of a FIRST robotics team
-    """
-
-    def __init__(self):
-        with open('data/team_data/name_to_number.json', 'r') as f:
-            self.team_data = json.load(f)
-
-    def fetch_team_number(self, team_name: str) -> Dict:
-        try:
-
-            best_match, score = process.extractOne(team_name, self.team_data.keys())
-            team_number = self.team_data[best_match]
-
-            return {"team_number": team_number}
-        except Exception as e:
-            return f"Error extracting team number: {str(e)}"
-        
-    def extract_team_number_from_name(self, tool_message: lr.agent.ToolMessage) -> None:
-        if not hasattr(tool_message, 'team_number') or tool_message.team_number == 'None':
-            if tool_message.team_name != 'None':
-                team_number = self.fetch_team_number(team_name=tool_message.team_name)['team_number']
-                tool_message.team_number = int(team_number)
-
-################################################################################
-# ----------------------------- ExtractDistrictCode ---------------------------- #
-################################################################################
-
-class ExtractDistrictCode():
-    """
-    Fetch the district code given the name of a district and a year
-    """
-
-    def __init__(self):
-        with open('data/district_data/name_to_code.json', 'r') as f:
-            self.district_data = json.load(f)
-
-    def fetch_district_code(self, district_name: str, year: int) -> Dict:
-        try:
-
-            if year == None:
-                year = datetime.datetime.now().year
-
-            valid_district_data = self.district_data[str(year)]
-
-            best_match, score = process.extractOne(district_name, valid_district_data.keys())
-            district_code = valid_district_data[best_match]
-
-            return {"district_code": district_code}
-        except Exception as e:
-            return f"Error extracting district code: {str(e)}"
-        
-    def extract_district_code_from_name(self, tool_message: lr.agent.ToolMessage) -> None:
-        if tool_message.district_name != 'None':
-            district_code = self.fetch_district_code(district_name=tool_message.district_name, year=tool_message.year)['district_code']
-            tool_message.district_code = district_code
 
 ################################################################################
 # ------------------------------- FetchTeamInfo ------------------------------ #

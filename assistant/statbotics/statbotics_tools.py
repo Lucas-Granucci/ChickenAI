@@ -1,57 +1,12 @@
-import os
-import json
 import langroid as lr
 from langroid.pydantic_v1 import BaseModel, Field
 from langroid.agent.tools.orchestration import FinalResultTool
 
+from assistant.utils import ExtractTeamNumber
 from assistant.statbotics.statbotics_utils import plot_statbotics_info
+
 import streamlit as st
-from typing import Optional, Dict, Any
-from fuzzywuzzy import process
-
-def fix_missing_param(param_name, tool_message):
-    if not hasattr(tool_message, param_name) or getattr(tool_message, param_name) == 'None':
-        return None
-    else:
-        return getattr(tool_message, param_name)
-
-################################################################################
-# ----------------------------- ExtractTeamNumber ---------------------------- #
-################################################################################
-
-class ExtractTeamNumber():
-    """
-    Fetch the team number given the name of a FIRST robotics team
-    """
-
-    def __init__(self):
-        with open('data/team_data/name_to_number.json', 'r') as f:
-            self.team_data = json.load(f)
-
-    def fetch_team_number(self, team_name: str) -> Dict:
-        try:
-
-            best_match, score = process.extractOne(team_name, self.team_data.keys())
-            team_number = self.team_data[best_match]
-
-            return {"team_number": team_number}
-        except Exception as e:
-            return f"Error extracting team number: {str(e)}"
-        
-    def extract_team_number_from_name(self, tool_message: lr.agent.ToolMessage) -> None:
-        if not hasattr(tool_message, 'team_number') or tool_message.team_number == 'None':
-            if tool_message.team_name != 'None':
-                team_number = self.fetch_team_number(team_name=tool_message.team_name)['team_number']
-                tool_message.team_number = int(team_number)
-
-    def extract_team_numbers_from_list(self, tool_message: lr.agent.ToolMessage) -> None:
-        if not hasattr(tool_message, 'team_numbers') or all(item in ('None', None) for item in tool_message.team_numbers):
-            if tool_message.team_names != 'None':
-                team_numbers = []
-                for team_name in tool_message.team_names:
-                    team_number = self.fetch_team_number(team_name=team_name)['team_number']
-                    team_numbers.append(int(team_number))
-                tool_message.team_numbers = team_numbers
+from typing import Any
 
 ################################################################################
 # ---------------------------- PlottStatboticsInfo --------------------------- #

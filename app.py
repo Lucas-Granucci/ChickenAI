@@ -11,12 +11,12 @@ def get_processor():
     return setup_query_processor(chat_model='llama-3.1-70b-versatile')
 
 st.title("🐔⚙️ Chicken-AI")
-st.caption("🚀 A Streamlit chatbot powered by GroqCloud and The Blue Alliance")
+st.caption("🚀 A Streamlit chatbot powered by GroqCloud, The Blue Alliance and Statbotics")
 
 with st.sidebar:
     with st.expander("ℹ️ More Info"):
         st.write("""
-        Chicken-AI is a chatbot that can answer questions about FIRST Robotics. It uses the GroqCloud API for natural language processing and the The Blue Alliance API for information retrieval.
+        Chicken-AI is a chatbot that can answer questions about FIRST Robotics. It uses the GroqCloud API for natural language processing and the The Blue Alliance and Statbotics APIs for information retrieval.
                  
         As of know, ChickenAI can be used to answer the following queries:
         - What is the team number for team <team_name>?
@@ -28,8 +28,13 @@ with st.sidebar:
         - What events are happening in <state_name> during the <year> season?
         - What awards did <team_name/team_number> win during the <year> season?
         - What are the highest ranked teams in <district_name> during the <year> season?
-                 
-        These are just some sample questions, feel free to ask anything you want!
+        - Plot the <statistic> for teams <team_names/team_numbers>
+            - Winrate
+            - EPA
+            - Win count
+            - Loss count
+            - Total count
+        These are just some sample queries, feel free to ask anything you want!
         """)
 
 if "messages" not in st.session_state:
