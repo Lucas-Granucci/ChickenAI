@@ -5,6 +5,7 @@ import langroid.language_models as lm
 from assistant.query_processor import QueryProcessor
 from assistant.tba.tba_api import TheBlueAllianceAPI
 from assistant.tba.tba_tools import FetchTeamInfo, FetchTeamEvents, FetchAllEvents, FetchTeamAwards, FetchDistrictRankings
+from assistant.statbotics.statbotics_tools import PlotTeamStatistics
 from assistant.utils import ErrorHandlingTool, DirectResponseTool
 
 # Initialize the TBA API
@@ -65,6 +66,8 @@ def setup_query_processor(chat_model: str = "llama-3.1-8b-instant") -> QueryProc
     backend_agent.enable_message(FetchAllEvents)
     backend_agent.enable_message(FetchTeamAwards)
     backend_agent.enable_message(FetchDistrictRankings)
+
+    backend_agent.enable_message(PlotTeamStatistics)
 
     backend_agent.enable_message(ErrorHandlingTool)
     backend_agent.enable_message(DirectResponseTool)
